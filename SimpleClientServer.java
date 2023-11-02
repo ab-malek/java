@@ -1,5 +1,5 @@
-import java.net.*;
 import java.io.*;
+import java.net.*;
 import java.util.*;
 
 public class server {
@@ -9,15 +9,15 @@ public class server {
         Socket socket = ss.accept();
         System.out.println("Connection established");
 
-        ObjectInputStream ois = new ObjectInputStream(socket.getInputStream());
-        ObjectOutputStream oos = new ObjectOutputStream(socket.getOutputStream());
+        DataInputStream dis = new DataInputStream(socket.getInputStream());
+        DataOutputStream dos = new DataOutputStream(socket.getOutputStream());
 
-        Object obMessage = ois.readObject();
-        String message = (String)obMessage;
-        message = message.toUpperCase();
-        oos.writeObject(message);
+        String name = dis.readUTF();
+        name = name.toUpperCase();
+        dos.writeUTF(name);
     }
 }
+
 
 import java.net.*;
 import java.io.*;
@@ -28,17 +28,40 @@ public class client {
         System.out.println("Client started");
         Socket socket = new Socket("localhost",4545);
 
-        ObjectOutputStream oos = new ObjectOutputStream(socket.getOutputStream());
-        ObjectInputStream ois = new ObjectInputStream(socket.getInputStream());
+        DataOutputStream dos = new DataOutputStream(socket.getOutputStream());
+        DataInputStream dis = new DataInputStream(socket.getInputStream());
 
         Scanner sc  = new Scanner(System.in);
-        String message = sc.nextLine();
+        String name = sc.nextLine();
 
-        oos.writeObject(message);
+        dos.writeUTF(name);
 
-        Object obMessage = ois.readObject();
+        name = dis.readUTF();
 
-        System.out.println("From server : "+(String)obMessage);
+        System.out.println("From server : "+name);
+
+    }
+}
+import java.net.*;
+import java.io.*;
+import java.util.*;
+
+public class client {
+    public static void main(String[] args) throws IOException, ClassNotFoundException {
+        System.out.println("Client started");
+        Socket socket = new Socket("localhost",4545);
+
+        DataOutputStream dos = new DataOutputStream(socket.getOutputStream());
+        DataInputStream dis = new DataInputStream(socket.getInputStream());
+
+        Scanner sc  = new Scanner(System.in);
+        String name = sc.nextLine();
+
+        dos.writeUTF(name);
+
+        name = dis.readUTF();
+
+        System.out.println("From server : "+name);
 
     }
 }
